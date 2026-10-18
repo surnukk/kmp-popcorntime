@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">PopcornTime</string>
+    <string name="onboarding_title_1">Знайди свій вайб на вечір</string>
+    <string name="onboarding_desc_1">Тисячі фільмів, серіалів та анімації під будь-який настрій.</string>
+
+    <string name="onboarding_title_2">Створюй списки бажаного</string>
+    <string name="onboarding_desc_2">Зберігай улюблені стрічки та ділися ними з друзями.</string>
+
+    <string name="onboarding_title_3">Поринай у кінематограф</string>
+    <string name="onboarding_desc_3">Зручний інтерфейс, темна тема та повна синхронізація.</string>
+
+    <string name="btn_next">Далі</string>
+    <string name="btn_back">Назад</string>
+    <string name="btn_start">Розпочати</string>
+    <string name="btn_login">Вже є акаунт? Увійти</string>
+</resources>

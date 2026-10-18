@@ -3,6 +3,7 @@ package ua.morozova.popcorntime
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,32 +19,27 @@ import org.jetbrains.compose.resources.painterResource
 
 import popcorntime.shared.generated.resources.Res
 import popcorntime.shared.generated.resources.compose_multiplatform
+import ua.morozova.popcorntime.ui.onboarding.OnboardingScreen
 import ua.morozova.popcorntime.ui.theme.AppTheme
 
 @Composable
 @Preview
 fun App() {
     AppTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+        var showOnboarding by remember { mutableStateOf(true) }
+
+        if (showOnboarding) {
+            OnboardingScreen(
+                onFinishClicked = {
+                    showOnboarding = false
                 }
+            )
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Головний екран PopcornTime", style = MaterialTheme.typography.headlineMedium)
             }
         }
     }

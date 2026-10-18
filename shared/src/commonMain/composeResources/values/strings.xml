@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">PopcornTime</string>
+    <string name="onboarding_title_1">Find Your Evening Vibe</string>
+    <string name="onboarding_desc_1">Thousands of movies and TV shows for any mood.</string>
+
+    <string name="onboarding_title_2">Create Watchlists</string>
+    <string name="onboarding_desc_2">Save your favorite titles and share them with friends.</string>
+
+    <string name="onboarding_title_3">Dive into Cinema</string>
+    <string name="onboarding_desc_3">Convenient interface, dark theme, and full synchronization.</string>
+
+    <string name="btn_next">Next</string>
+    <string name="btn_back">Back</string>
+    <string name="btn_start">Get Started</string>
+    <string name="btn_login">Already have an account? Sign in</string>
+</resources>
