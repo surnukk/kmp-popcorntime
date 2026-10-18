@@ -18,11 +18,12 @@ import org.jetbrains.compose.resources.painterResource
 
 import popcorntime.shared.generated.resources.Res
 import popcorntime.shared.generated.resources.compose_multiplatform
+import ua.morozova.popcorntime.ui.theme.AppTheme
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    AppTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
