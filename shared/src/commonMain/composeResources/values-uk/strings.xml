@@ -18,4 +18,30 @@
 
     <string name="account_question">Ще немає акаунта? </string>
     <string name="btn_signup">Зареєструватися</string>
+
+    <string name="auth_title">З поверненням</string>
+    <string name="auth_subtitle">Увійди, щоб відкрити свій список фільмів</string>
+    <string name="auth_username_label">Ім’я користувача</string>
+    <string name="auth_password_label">Пароль</string>
+    <string name="btn_sign_in">Увійти</string>
+
+    <string name="error_username_empty">Введи ім’я користувача</string>
+    <string name="error_username_short">Мінімум 3 символи</string>
+    <string name="error_username_chars">Лише літери, цифри, \"_\" та \".\"</string>
+    <string name="error_password_empty">Введи пароль</string>
+    <string name="error_password_short">Мінімум 6 символів</string>
+    <string name="error_password_letter">Додай хоча б одну літеру</string>
+    <string name="error_password_digit">Додай хоча б одну цифру</string>
+
+    <string name="or_divider">або</string>
+
+    <string name="register_title">Створити акаунт</string>
+    <string name="register_subtitle">Приєднуйся до PopcornTime та збирай свій список фільмів</string>
+    <string name="register_email_label">Електронна пошта</string>
+    <string name="register_confirm_label">Підтвердження пароля</string>
+    <string name="btn_register">Створити акаунт</string>
+    <string name="have_account_question">Вже є акаунт? </string>
+
+    <string name="home_title">Головний екран PopcornTime</string>
+    <string name="home_welcome">Вітаю, %1$s!</string>
 </resources>

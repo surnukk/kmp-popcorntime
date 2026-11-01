@@ -18,4 +18,30 @@
 
     <string name="account_question">Don\'t have an account? </string>
     <string name="btn_signup">Sign Up</string>
+
+    <string name="auth_title">Welcome back</string>
+    <string name="auth_subtitle">Sign in to open your watchlist</string>
+    <string name="auth_username_label">Username</string>
+    <string name="auth_password_label">Password</string>
+    <string name="btn_sign_in">Sign In</string>
+
+    <string name="error_username_empty">Enter your username</string>
+    <string name="error_username_short">At least 3 characters</string>
+    <string name="error_username_chars">Only letters, digits, \"_\" and \".\"</string>
+    <string name="error_password_empty">Enter your password</string>
+    <string name="error_password_short">At least 6 characters</string>
+    <string name="error_password_letter">Add at least one letter</string>
+    <string name="error_password_digit">Add at least one digit</string>
+
+    <string name="or_divider">or</string>
+
+    <string name="register_title">Create account</string>
+    <string name="register_subtitle">Join PopcornTime and build your watchlist</string>
+    <string name="register_email_label">Email</string>
+    <string name="register_confirm_label">Confirm password</string>
+    <string name="btn_register">Create account</string>
+    <string name="have_account_question">Already have an account? </string>
+
+    <string name="home_title">PopcornTime Home</string>
+    <string name="home_welcome">Welcome, %1$s!</string>
 </resources>

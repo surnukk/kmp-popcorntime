@@ -9,50 +9,80 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import popcorntime.shared.generated.resources.Res
+import org.koin.compose.viewmodel.koinViewModel
 import popcorntime.shared.generated.resources.*
+import ua.morozova.popcorntime.ui.onboarding.OnboardingContract.Effect
+import ua.morozova.popcorntime.ui.onboarding.OnboardingContract.Intent
+import ua.morozova.popcorntime.ui.onboarding.OnboardingContract.State
 
 data class OnboardingPage(
-    val titleRes: org.jetbrains.compose.resources.StringResource,
-    val descRes: org.jetbrains.compose.resources.StringResource,
+    val titleRes: StringResource,
+    val descRes: StringResource,
     val emoji: String
 )
 
 val onboardingPages = listOf(
-    OnboardingPage(
-        titleRes = Res.string.onboarding_title_1,
-        descRes = Res.string.onboarding_desc_1,
-        emoji = "🔥"
-    ),
-    OnboardingPage(
-        titleRes = Res.string.onboarding_title_2,
-        descRes = Res.string.onboarding_desc_2,
-        emoji = "⭐"
-    ),
-    OnboardingPage(
-        titleRes = Res.string.onboarding_title_3,
-        descRes = Res.string.onboarding_desc_3,
-        emoji = "🎬"
-    )
+    OnboardingPage(Res.string.onboarding_title_1, Res.string.onboarding_desc_1, "🔥"),
+    OnboardingPage(Res.string.onboarding_title_2, Res.string.onboarding_desc_2, "⭐"),
+    OnboardingPage(Res.string.onboarding_title_3, Res.string.onboarding_desc_3, "🎬")
 )
 
 @Composable
 fun OnboardingScreen(
-    onFinishClicked: () -> Unit
+    onNavigateToAuth: () -> Unit,
+    viewModel: OnboardingViewModel = koinViewModel()
 ) {
-    val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
-    val coroutineScope = rememberCoroutineScope()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val currentOnNavigateToAuth by rememberUpdatedState(onNavigateToAuth)
+
+    LaunchedEffect(viewModel) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                Effect.NavigateToAuth -> currentOnNavigateToAuth()
+            }
+        }
+    }
+
+    OnboardingContent(
+        state = state,
+        onIntent = viewModel::onIntent
+    )
+}
+
+@Composable
+private fun OnboardingContent(
+    state: State,
+    onIntent: (Intent) -> Unit
+) {
+    val pagerState = rememberPagerState(
+        initialPage = state.currentPage,
+        pageCount = { state.pageCount }
+    )
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.settledPage }.collect { page ->
+            onIntent(Intent.PageChanged(page))
+        }
+    }
+    LaunchedEffect(state.currentPage) {
+        if (pagerState.currentPage != state.currentPage) {
+            pagerState.animateScrollToPage(state.currentPage)
+        }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -76,18 +106,16 @@ fun OnboardingScreen(
                     fontSize = 14.sp,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
-                        .clickable { onFinishClicked() }
+                        .clickable { onIntent(Intent.SkipClicked) }
                         .padding(4.dp)
                 )
             }
 
-            // 2. ЦЕНТРАЛЬНИЙ БЛОК: Логотип і пейджер
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Логотип та назва додатка
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
@@ -122,7 +150,6 @@ fun OnboardingScreen(
                     )
                 }
 
-                // Пейджер
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier
@@ -144,10 +171,7 @@ fun OnboardingScreen(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = page.emoji,
-                                fontSize = 42.sp
-                            )
+                            Text(text = page.emoji, fontSize = 42.sp)
 
                             Spacer(modifier = Modifier.height(12.dp))
 
@@ -175,21 +199,19 @@ fun OnboardingScreen(
                 }
             }
 
-            // 3. НИЖНЯ ПАНЕЛЬ КЕРУВАННЯ
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp)
             ) {
-                // Клікабельні індикатори-смужки
                 Row(
                     modifier = Modifier.height(24.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    repeat(onboardingPages.size) { index ->
-                        val isSelected = pagerState.currentPage == index
+                    repeat(state.pageCount) { index ->
+                        val isSelected = state.currentPage == index
                         Box(
                             modifier = Modifier
                                 .padding(horizontal = 4.dp)
@@ -200,29 +222,20 @@ fun OnboardingScreen(
                                     if (isSelected) MaterialTheme.colorScheme.primary
                                     else MaterialTheme.colorScheme.surfaceContainerHighest
                                 )
-                                .clickable {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(index)
-                                    }
-                                }
+                                .clickable { onIntent(Intent.PageSelected(index)) }
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Кнопки навігації (Назад + Далі)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    if (pagerState.currentPage > 0) {
+                    if (!state.isFirstPage) {
                         OutlinedButton(
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                                }
-                            },
+                            onClick = { onIntent(Intent.BackClicked) },
                             modifier = Modifier
                                 .weight(1f)
                                 .height(52.dp),
@@ -235,23 +248,15 @@ fun OnboardingScreen(
                     }
 
                     Button(
-                        onClick = {
-                            if (pagerState.currentPage < onboardingPages.size - 1) {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                                }
-                            } else {
-                                onFinishClicked()
-                            }
-                        },
+                        onClick = { onIntent(Intent.NextClicked) },
                         modifier = Modifier
-                            .weight(if (pagerState.currentPage > 0) 1f else 2f)
+                            .weight(if (state.isFirstPage) 2f else 1f)
                             .height(52.dp),
                         shape = RoundedCornerShape(26.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
                         Text(
-                            text = if (pagerState.currentPage == onboardingPages.size - 1)
+                            text = if (state.isLastPage)
                                 stringResource(Res.string.btn_start)
                             else
                                 stringResource(Res.string.btn_next),
@@ -264,7 +269,6 @@ fun OnboardingScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Нижнє посилання реєстрації / входу
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
@@ -280,7 +284,7 @@ fun OnboardingScreen(
                         color = MaterialTheme.colorScheme.primary,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.clickable { onFinishClicked() }
+                        modifier = Modifier.clickable { onIntent(Intent.SignUpClicked) }
                     )
                 }
             }
