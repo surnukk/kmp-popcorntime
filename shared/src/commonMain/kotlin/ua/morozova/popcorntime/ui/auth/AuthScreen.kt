@@ -33,7 +33,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import popcorntime.shared.generated.resources.*
-import ua.morozova.popcorntime.domain.ValidationError
 import ua.morozova.popcorntime.ui.auth.AuthContract.Effect
 import ua.morozova.popcorntime.ui.auth.AuthContract.Intent
 import ua.morozova.popcorntime.ui.auth.AuthContract.State
@@ -43,6 +42,7 @@ import ua.morozova.popcorntime.ui.components.LabeledTextField
 import ua.morozova.popcorntime.ui.components.PrimaryButton
 import ua.morozova.popcorntime.ui.components.SecondaryButton
 import ua.morozova.popcorntime.ui.components.TextDivider
+import ua.morozova.popcorntime.ui.components.message
 
 @Composable
 fun AuthScreen(
@@ -227,16 +227,3 @@ private fun AuthContent(
         }
     }
 }
-
-@Composable
-private fun ValidationError.message(): String = stringResource(
-    when (this) {
-        ValidationError.UsernameEmpty -> Res.string.error_username_empty
-        ValidationError.UsernameTooShort -> Res.string.error_username_short
-        ValidationError.UsernameInvalidChars -> Res.string.error_username_chars
-        ValidationError.PasswordEmpty -> Res.string.error_password_empty
-        ValidationError.PasswordTooShort -> Res.string.error_password_short
-        ValidationError.PasswordNoLetter -> Res.string.error_password_letter
-        ValidationError.PasswordNoDigit -> Res.string.error_password_digit
-    }
-)

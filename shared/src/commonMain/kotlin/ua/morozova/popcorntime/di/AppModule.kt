@@ -7,6 +7,8 @@ import ua.morozova.popcorntime.data.OnboardingRepositoryImpl
 import ua.morozova.popcorntime.domain.OnboardingRepository
 import ua.morozova.popcorntime.domain.usecase.IsOnboardingCompletedUseCase
 import ua.morozova.popcorntime.domain.usecase.SetOnboardingCompletedUseCase
+import ua.morozova.popcorntime.domain.usecase.ValidateConfirmPasswordUseCase
+import ua.morozova.popcorntime.domain.usecase.ValidateEmailUseCase
 import ua.morozova.popcorntime.domain.usecase.ValidatePasswordUseCase
 import ua.morozova.popcorntime.domain.usecase.ValidateUsernameUseCase
 import ua.morozova.popcorntime.settings.AppSettings
@@ -25,6 +27,8 @@ val appModule = module {
     factory { SetOnboardingCompletedUseCase(get()) }
     factory { ValidateUsernameUseCase() }
     factory { ValidatePasswordUseCase() }
+    factory { ValidateEmailUseCase() }
+    factory { ValidateConfirmPasswordUseCase() }
 
     viewModelOf(::MainViewModel)
     viewModelOf(::OnboardingViewModel)

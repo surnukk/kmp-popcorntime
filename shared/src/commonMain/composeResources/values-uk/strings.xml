@@ -33,6 +33,11 @@
     <string name="error_password_letter">Додай хоча б одну літеру</string>
     <string name="error_password_digit">Додай хоча б одну цифру</string>
 
+    <string name="error_email_empty">Введи електронну пошту</string>
+    <string name="error_email_invalid">Введи коректну пошту, напр. name@mail.com</string>
+    <string name="error_confirm_empty">Повтори пароль</string>
+    <string name="error_passwords_mismatch">Паролі не збігаються</string>
+
     <string name="or_divider">або</string>
 
     <string name="register_title">Створити акаунт</string>

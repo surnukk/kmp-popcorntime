@@ -33,6 +33,11 @@
     <string name="error_password_letter">Add at least one letter</string>
     <string name="error_password_digit">Add at least one digit</string>
 
+    <string name="error_email_empty">Enter your email</string>
+    <string name="error_email_invalid">Enter a valid email, e.g. name@mail.com</string>
+    <string name="error_confirm_empty">Repeat your password</string>
+    <string name="error_passwords_mismatch">Passwords do not match</string>
+
     <string name="or_divider">or</string>
 
     <string name="register_title">Create account</string>

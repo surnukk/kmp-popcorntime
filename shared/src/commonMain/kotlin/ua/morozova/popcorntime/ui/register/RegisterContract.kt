@@ -1,5 +1,7 @@
 package ua.morozova.popcorntime.ui.register
 
+import ua.morozova.popcorntime.domain.ValidationError
+
 object RegisterContract {
 
     data class State(
@@ -7,6 +9,10 @@ object RegisterContract {
         val email: String = "",
         val password: String = "",
         val confirmPassword: String = "",
+        val usernameError: ValidationError? = null,
+        val emailError: ValidationError? = null,
+        val passwordError: ValidationError? = null,
+        val confirmPasswordError: ValidationError? = null,
         val isPasswordVisible: Boolean = false
     )
 

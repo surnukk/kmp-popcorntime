@@ -37,6 +37,7 @@ import ua.morozova.popcorntime.ui.components.AppLogo
 import ua.morozova.popcorntime.ui.components.CircleBackButton
 import ua.morozova.popcorntime.ui.components.LabeledTextField
 import ua.morozova.popcorntime.ui.components.PrimaryButton
+import ua.morozova.popcorntime.ui.components.message
 import ua.morozova.popcorntime.ui.register.RegisterContract.Effect
 import ua.morozova.popcorntime.ui.register.RegisterContract.Intent
 import ua.morozova.popcorntime.ui.register.RegisterContract.State
@@ -153,6 +154,7 @@ private fun RegisterContent(
                                 label = stringResource(Res.string.auth_username_label),
                                 value = state.username,
                                 onValueChange = { onIntent(Intent.UsernameChanged(it)) },
+                                errorMessage = state.usernameError?.message(),
                                 keyboardOptions = KeyboardOptions(
                                     capitalization = KeyboardCapitalization.None,
                                     autoCorrectEnabled = false,
@@ -167,6 +169,7 @@ private fun RegisterContent(
                                 label = stringResource(Res.string.register_email_label),
                                 value = state.email,
                                 onValueChange = { onIntent(Intent.EmailChanged(it)) },
+                                errorMessage = state.emailError?.message(),
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Email,
                                     autoCorrectEnabled = false,
@@ -181,6 +184,7 @@ private fun RegisterContent(
                                 label = stringResource(Res.string.auth_password_label),
                                 value = state.password,
                                 onValueChange = { onIntent(Intent.PasswordChanged(it)) },
+                                errorMessage = state.passwordError?.message(),
                                 visualTransformation = passwordTransformation,
                                 trailing = {
                                     Text(
@@ -205,6 +209,7 @@ private fun RegisterContent(
                                 label = stringResource(Res.string.register_confirm_label),
                                 value = state.confirmPassword,
                                 onValueChange = { onIntent(Intent.ConfirmPasswordChanged(it)) },
+                                errorMessage = state.confirmPasswordError?.message(),
                                 visualTransformation = passwordTransformation,
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Password,

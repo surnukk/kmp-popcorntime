@@ -7,5 +7,9 @@ enum class ValidationError {
     PasswordEmpty,
     PasswordTooShort,
     PasswordNoLetter,
-    PasswordNoDigit
+    PasswordNoDigit,
+    EmailEmpty,
+    EmailInvalid,
+    ConfirmPasswordEmpty,
+    PasswordsDoNotMatch
 }
