@@ -49,4 +49,17 @@
 
     <string name="home_title">Головний екран PopcornTime</string>
     <string name="home_welcome">Вітаю, %1$s!</string>
+
+    <string name="auth_chip">КІНОМАНСЬКИЙ КЛУБ</string>
+    <string name="auth_heading">З поверненням 🍿</string>
+    <string name="auth_description">Увійди, щоб синхронізувати вечірній список фільмів і враження від кіно.</string>
+    <string name="tab_sign_in">Вхід</string>
+    <string name="tab_create_account">Реєстрація</string>
+    <string name="forgot_password">Забули пароль?</string>
+    <string name="register_chip">ПРИЄДНУЙСЯ ДО КЛУБУ</string>
+    <string name="register_heading">Приєднуйся до клубу 🎬</string>
+    <string name="register_description">Створи акаунт, щоб збирати список фільмів і ділитися враженнями.</string>
+    <string name="footer_terms">Умови використання</string>
+    <string name="footer_privacy">Приватність</string>
+    <string name="footer_restore">Відновити покупки</string>
 </resources>

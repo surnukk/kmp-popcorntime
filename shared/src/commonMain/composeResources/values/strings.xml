@@ -42,11 +42,24 @@
 
     <string name="register_title">Create account</string>
     <string name="register_subtitle">Join PopcornTime and build your watchlist</string>
-    <string name="register_email_label">Email</string>
+    <string name="register_email_label">Email Address</string>
     <string name="register_confirm_label">Confirm password</string>
     <string name="btn_register">Create account</string>
     <string name="have_account_question">Already have an account? </string>
 
     <string name="home_title">PopcornTime Home</string>
     <string name="home_welcome">Welcome, %1$s!</string>
+
+    <string name="auth_chip">CINEPHILE LOUNGE</string>
+    <string name="auth_heading">Welcome Back 🍿</string>
+    <string name="auth_description">Sign in to sync your evening watchlist and movie reactions.</string>
+    <string name="tab_sign_in">Sign In</string>
+    <string name="tab_create_account">Create Account</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="register_chip">JOIN THE CLUB</string>
+    <string name="register_heading">Join the Club 🎬</string>
+    <string name="register_description">Create an account to build your watchlist and share your movie reactions.</string>
+    <string name="footer_terms">Terms of Service</string>
+    <string name="footer_privacy">Privacy Policy</string>
+    <string name="footer_restore">Restore Purchases</string>
 </resources>
