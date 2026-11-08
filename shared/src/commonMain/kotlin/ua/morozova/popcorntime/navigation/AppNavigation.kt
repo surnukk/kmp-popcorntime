@@ -1,6 +1,13 @@
 package ua.morozova.popcorntime.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -12,15 +19,11 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import org.koin.compose.viewmodel.koinViewModel
+import ua.morozova.popcorntime.MainViewModel
 import ua.morozova.popcorntime.ui.auth.AuthScreen
 import ua.morozova.popcorntime.ui.home.HomeScreen
-import ua.morozova.popcorntime.MainViewModel
 import ua.morozova.popcorntime.ui.onboarding.OnboardingScreen
 import ua.morozova.popcorntime.ui.register.RegisterScreen
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.Modifier
 
 private val navSavedStateConfig = SavedStateConfiguration {
     serializersModule = SerializersModule {
@@ -38,6 +41,14 @@ fun AppNavigation(
     mainViewModel: MainViewModel = koinViewModel()
 ) {
     val backStack = rememberNavBackStack(navSavedStateConfig, mainViewModel.startScreen)
+    val isLoggedIn by mainViewModel.isLoggedIn.collectAsStateWithLifecycle()
+
+    // Сесія зникла (натиснули "Вийти" або refresh-токен недійсний): повертаємо на вхід
+    LaunchedEffect(isLoggedIn) {
+        if (!isLoggedIn && backStack.lastOrNull() is Screen.Home) {
+            backStack.resetTo(Screen.Auth)
+        }
+    }
 
     NavDisplay(
         modifier = Modifier
@@ -57,7 +68,7 @@ fun AppNavigation(
             }
             entry<Screen.Auth> {
                 AuthScreen(
-                    onNavigateToHome = { username -> backStack.resetTo(Screen.Home(username)) },
+                    onNavigateToHome = { backStack.resetTo(Screen.Home) },
                     onNavigateToRegister = { backStack.add(Screen.Register) },
                     onNavigateBack = {
                         if (backStack.size > 1) backStack.removeLastOrNull()
@@ -70,8 +81,8 @@ fun AppNavigation(
                     onNavigateBack = { backStack.removeLastOrNull() }
                 )
             }
-            entry<Screen.Home> { key ->
-                HomeScreen(username = key.username)
+            entry<Screen.Home> {
+                HomeScreen()
             }
         }
     )

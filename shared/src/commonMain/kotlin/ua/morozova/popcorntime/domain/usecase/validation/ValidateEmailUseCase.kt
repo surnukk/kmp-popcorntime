@@ -1,4 +1,4 @@
-package ua.morozova.popcorntime.domain.usecase
+package ua.morozova.popcorntime.domain.usecase.validation
 
 import ua.morozova.popcorntime.domain.ValidationError
 

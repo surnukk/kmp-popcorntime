@@ -187,12 +187,14 @@ fun AuthPrimaryButton(
     text: String,
     icon: DrawableResource,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     val shape = RoundedCornerShape(18.dp)
     val glow = MaterialTheme.colorScheme.primary.copy(alpha = 0.55f)
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp)

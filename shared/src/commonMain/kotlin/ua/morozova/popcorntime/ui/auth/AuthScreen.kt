@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,9 +27,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import popcorntime.shared.generated.resources.*
+import ua.morozova.popcorntime.domain.auth.toStringResource
 import ua.morozova.popcorntime.ui.auth.AuthContract.Effect
 import ua.morozova.popcorntime.ui.auth.AuthContract.Intent
 import ua.morozova.popcorntime.ui.auth.AuthContract.State
@@ -44,12 +48,13 @@ import ua.morozova.popcorntime.ui.components.message
 
 @Composable
 fun AuthScreen(
-    onNavigateToHome: (username: String) -> Unit,
+    onNavigateToHome: () -> Unit,
     onNavigateToRegister: () -> Unit,
     onNavigateBack: () -> Unit,
     viewModel: AuthViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
     val currentOnHome by rememberUpdatedState(onNavigateToHome)
     val currentOnRegister by rememberUpdatedState(onNavigateToRegister)
     val currentOnBack by rememberUpdatedState(onNavigateBack)
@@ -57,15 +62,22 @@ fun AuthScreen(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is Effect.NavigateToHome -> currentOnHome(effect.username)
+                Effect.NavigateToHome -> currentOnHome()
                 Effect.NavigateToRegister -> currentOnRegister()
                 Effect.NavigateBack -> currentOnBack()
+                is Effect.ShowError -> {
+                    val message = getString(effect.error.toStringResource())
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    // launch, щоб показ снекбара не блокував обробку наступних подій
+                    launch { snackbarHostState.showSnackbar(message) }
+                }
             }
         }
     }
 
     AuthContent(
         state = state,
+        snackbarHostState = snackbarHostState,
         onIntent = viewModel::onIntent
     )
 }
@@ -73,6 +85,7 @@ fun AuthScreen(
 @Composable
 private fun AuthContent(
     state: State,
+    snackbarHostState: SnackbarHostState,
     onIntent: (Intent) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -93,131 +106,142 @@ private fun AuthContent(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .safeContentPadding()
-        ) {
-            AuthTopBar(
-                onBackClick = { onIntent(Intent.BackClicked) },
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
-            )
-
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp)
+                    .fillMaxSize()
+                    .safeContentPadding()
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-
-                AuthChip(text = stringResource(Res.string.auth_chip))
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = stringResource(Res.string.auth_heading),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 30.sp,
-                    lineHeight = 36.sp,
-                    fontWeight = FontWeight.ExtraBold
+                AuthTopBar(
+                    onBackClick = { onIntent(Intent.BackClicked) },
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = stringResource(Res.string.auth_description),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 15.sp,
-                    lineHeight = 22.sp
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                AuthTabs(
-                    selected = AuthTab.SignIn,
-                    onSignInClick = { },
-                    onCreateAccountClick = { onIntent(Intent.SignUpClicked) }
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceContainerHigh)
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 20.dp)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp)
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    AuthChip(text = stringResource(Res.string.auth_chip))
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = stringResource(Res.string.auth_heading),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = 30.sp,
+                        lineHeight = 36.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = stringResource(Res.string.auth_description),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 15.sp,
+                        lineHeight = 22.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    AuthTabs(
+                        selected = AuthTab.SignIn,
+                        onSignInClick = { },
+                        onCreateAccountClick = { onIntent(Intent.SignUpClicked) }
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceContainerHigh)
                     ) {
-                        LabeledTextField(
-                            label = stringResource(Res.string.auth_username_label),
-                            value = state.username,
-                            onValueChange = { onIntent(Intent.UsernameChanged(it)) },
-                            errorMessage = state.usernameError?.message(),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Text,
-                                capitalization = KeyboardCapitalization.None,
-                                autoCorrectEnabled = false,
-                                imeAction = ImeAction.Next
-                            ),
-                            keyboardActions = usernameActions
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp)
+                        ) {
+                            LabeledTextField(
+                                label = stringResource(Res.string.auth_username_label),
+                                value = state.username,
+                                onValueChange = { onIntent(Intent.UsernameChanged(it)) },
+                                errorMessage = state.usernameError?.message(),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    capitalization = KeyboardCapitalization.None,
+                                    autoCorrectEnabled = false,
+                                    imeAction = ImeAction.Next
+                                ),
+                                keyboardActions = usernameActions
+                            )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        LabeledTextField(
-                            label = stringResource(Res.string.auth_password_label),
-                            value = state.password,
-                            onValueChange = { onIntent(Intent.PasswordChanged(it)) },
-                            errorMessage = state.passwordError?.message(),
-                            visualTransformation = if (state.isPasswordVisible)
-                                VisualTransformation.None
-                            else
-                                PasswordVisualTransformation(),
-                            labelTrailing = {
-                                Text(
-                                    text = stringResource(Res.string.forgot_password),
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            },
-                            trailing = {
-                                PasswordVisibilityToggle(
-                                    isVisible = state.isPasswordVisible,
-                                    onClick = { onIntent(Intent.TogglePasswordVisibility) }
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Password,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = passwordActions
-                        )
+                            LabeledTextField(
+                                label = stringResource(Res.string.auth_password_label),
+                                value = state.password,
+                                onValueChange = { onIntent(Intent.PasswordChanged(it)) },
+                                errorMessage = state.passwordError?.message(),
+                                visualTransformation = if (state.isPasswordVisible)
+                                    VisualTransformation.None
+                                else
+                                    PasswordVisualTransformation(),
+                                labelTrailing = {
+                                    Text(
+                                        text = stringResource(Res.string.forgot_password),
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                },
+                                trailing = {
+                                    PasswordVisibilityToggle(
+                                        isVisible = state.isPasswordVisible,
+                                        onClick = { onIntent(Intent.TogglePasswordVisibility) }
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Password,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = passwordActions
+                            )
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(20.dp))
 
-                        AuthPrimaryButton(
-                            text = stringResource(Res.string.btn_sign_in),
-                            icon = Res.drawable.ic_movie,
-                            onClick = {
-                                keyboard?.hide()
-                                focusManager.clearFocus()
-                                onIntent(Intent.SignInClicked)
-                            }
-                        )
+                            AuthPrimaryButton(
+                                text = stringResource(Res.string.btn_sign_in),
+                                icon = Res.drawable.ic_movie,
+                                enabled = !state.isLoading,
+                                onClick = {
+                                    keyboard?.hide()
+                                    focusManager.clearFocus()
+                                    onIntent(Intent.SignInClicked)
+                                }
+                            )
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                AuthFooter(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp))
             }
 
-            AuthFooter(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp))
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .safeContentPadding()
+                    .padding(16.dp)
+            )
         }
     }
 }

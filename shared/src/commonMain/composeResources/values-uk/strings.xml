@@ -62,4 +62,10 @@
     <string name="footer_terms">Умови використання</string>
     <string name="footer_privacy">Приватність</string>
     <string name="footer_restore">Відновити покупки</string>
+
+    <string name="error_invalid_credentials">Невірне ім’я користувача або пароль</string>
+    <string name="error_network">Немає зʼєднання з інтернетом. Перевір мережу та спробуй ще раз</string>
+    <string name="error_server">Помилка сервера. Спробуй пізніше</string>
+    <string name="error_unknown">Щось пішло не так. Спробуй ще раз</string>
+    <string name="btn_logout">Вийти</string>
 </resources>

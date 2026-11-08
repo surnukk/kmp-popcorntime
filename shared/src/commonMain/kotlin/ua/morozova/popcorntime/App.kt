@@ -1,18 +1,23 @@
 package ua.morozova.popcorntime
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
+import org.koin.dsl.koinConfiguration
 import ua.morozova.popcorntime.di.appModule
+import ua.morozova.popcorntime.di.rememberPlatformModule
 import ua.morozova.popcorntime.navigation.AppNavigation
 import ua.morozova.popcorntime.ui.theme.AppTheme
 
 @Composable
-@Preview
 fun App() {
-    KoinApplication(application = { modules(appModule) }) {
-        AppTheme {
-            AppNavigation()
+    val platformModule = rememberPlatformModule()
+
+    KoinApplication(
+        configuration = koinConfiguration { modules(platformModule, appModule) },
+        content = {
+            AppTheme {
+                AppNavigation()
+            }
         }
-    }
+    )
 }

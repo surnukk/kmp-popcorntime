@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ua.morozova.popcorntime.domain.usecase.ValidateConfirmPasswordUseCase
-import ua.morozova.popcorntime.domain.usecase.ValidateEmailUseCase
-import ua.morozova.popcorntime.domain.usecase.ValidatePasswordUseCase
-import ua.morozova.popcorntime.domain.usecase.ValidateUsernameUseCase
+import ua.morozova.popcorntime.domain.usecase.validation.ValidateConfirmPasswordUseCase
+import ua.morozova.popcorntime.domain.usecase.validation.ValidateEmailUseCase
+import ua.morozova.popcorntime.domain.usecase.validation.ValidatePasswordUseCase
+import ua.morozova.popcorntime.domain.usecase.validation.ValidateUsernameUseCase
 import ua.morozova.popcorntime.ui.register.RegisterContract.Effect
 import ua.morozova.popcorntime.ui.register.RegisterContract.Intent
 import ua.morozova.popcorntime.ui.register.RegisterContract.State

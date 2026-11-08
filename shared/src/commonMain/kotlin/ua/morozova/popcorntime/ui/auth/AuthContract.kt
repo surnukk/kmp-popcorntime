@@ -1,6 +1,7 @@
 package ua.morozova.popcorntime.ui.auth
 
 import ua.morozova.popcorntime.domain.ValidationError
+import ua.morozova.popcorntime.domain.auth.AuthError
 
 object AuthContract {
 
@@ -9,7 +10,8 @@ object AuthContract {
         val password: String = "",
         val usernameError: ValidationError? = null,
         val passwordError: ValidationError? = null,
-        val isPasswordVisible: Boolean = false
+        val isPasswordVisible: Boolean = false,
+        val isLoading: Boolean = false
     )
 
     sealed interface Intent {
@@ -22,8 +24,9 @@ object AuthContract {
     }
 
     sealed interface Effect {
-        data class NavigateToHome(val username: String) : Effect
+        data object NavigateToHome : Effect
         data object NavigateToRegister : Effect
         data object NavigateBack : Effect
+        data class ShowError(val error: AuthError) : Effect
     }
 }
