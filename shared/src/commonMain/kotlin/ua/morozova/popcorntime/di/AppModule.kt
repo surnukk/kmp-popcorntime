@@ -11,7 +11,7 @@ import ua.morozova.popcorntime.domain.usecase.ValidateConfirmPasswordUseCase
 import ua.morozova.popcorntime.domain.usecase.ValidateEmailUseCase
 import ua.morozova.popcorntime.domain.usecase.ValidatePasswordUseCase
 import ua.morozova.popcorntime.domain.usecase.ValidateUsernameUseCase
-import ua.morozova.popcorntime.settings.AppSettings
+import ua.morozova.popcorntime.data.AppSettings
 import ua.morozova.popcorntime.ui.auth.AuthViewModel
 import ua.morozova.popcorntime.MainViewModel
 import ua.morozova.popcorntime.ui.onboarding.OnboardingViewModel

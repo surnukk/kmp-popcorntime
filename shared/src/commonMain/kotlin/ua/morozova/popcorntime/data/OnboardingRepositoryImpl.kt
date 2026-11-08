@@ -1,7 +1,7 @@
 package ua.morozova.popcorntime.data
 
 import ua.morozova.popcorntime.domain.OnboardingRepository
-import ua.morozova.popcorntime.settings.AppSettings
+import ua.morozova.popcorntime.data.AppSettings
 
 class OnboardingRepositoryImpl(
     private val appSettings: AppSettings

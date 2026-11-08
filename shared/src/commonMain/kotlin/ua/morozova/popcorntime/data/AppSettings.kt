@@ -1,4 +1,4 @@
-package ua.morozova.popcorntime.settings
+package ua.morozova.popcorntime.data
 
 import com.russhwolf.settings.Settings
 
